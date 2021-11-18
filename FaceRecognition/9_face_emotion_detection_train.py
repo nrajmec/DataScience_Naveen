@@ -7,6 +7,8 @@ from matplotlib import pyplot as plt
 import numpy as np
 import random
 
+# Dataset from this link https://www.kaggle.com/msambare/fer2013
+
 IMG_HEIGHT = 48
 IMG_WIDTH = 48
 batch_size = 32
