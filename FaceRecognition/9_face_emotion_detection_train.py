@@ -6,6 +6,10 @@ import os
 from matplotlib import pyplot as plt
 import numpy as np
 import random
+from sklearn import metrics
+from sklearn.metrics import confusion_matrix
+from keras.models import load_model
+import seaborn as sns
 
 # Dataset from this link https://www.kaggle.com/msambare/fer2013
 
@@ -115,4 +119,31 @@ plt.title('Training and validation accuracy')
 plt.xlabel('Epochs')
 plt.ylabel('Accuracy')
 plt.legend()
+plt.show()
+
+# Test the model
+my_model = load_model('emotion_detection_model_100epochs.h5', compile=False)
+
+# Generate a batch of images
+test_img, test_lbl = validation_gen.__next__()
+predictions = my_model.predict(test_img)
+
+predictions = np.argmax(predictions, axis=1)
+test_labels = np.argmax(test_lbl, axis=1)
+
+print("Accuracy = ", metrics.accuracy_score(test_labels, predictions))
+
+# Confusion Matrix - verify accuracy of each class
+cm = confusion_matrix(test_labels, predictions)
+
+sns.heatmap(cm, annot=True)
+
+class_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
+# Check results on a few select images
+n = random.randint(0, test_img.shape[0] - 1)
+image = test_img[n]
+orig_label = class_labels[test_labels[n]]
+pred_label = class_labels[predictions[n]]
+plt.imshow(image[:, :, 0], cmap='gray')
+plt.title("Original label is:" + orig_label + " Predicted is: " + pred_label)
 plt.show()
